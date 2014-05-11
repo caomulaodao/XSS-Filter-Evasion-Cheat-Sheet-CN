@@ -17,7 +17,7 @@ XSS_Filter_Evasion_Cheat_Sheet 中文版
 翻译文档在线阅读：https://www.zybuluo.com/laodao/note/9592
 
 #介绍#
-这篇文章的主要目的是去给应用安全测试者提供一份xss漏洞检测指南。文章的初始内容由RSnake提供给OWASP，从他的xss备忘录:http://ha.ckers.org/xss.html。目前这个网页已经重定向到我们这里，我们打算维护和完善它。OWASP的第一个防御备忘录项目：the XSS (Cross Site Scripting) Prevention Cheat Sheet灵感来源于RSnake的 XSS Cheat Sheet，所以我们对他给予我们的启发表示感谢。我们想要去创建短小简单的参考给开发者去帮助他们预防xss漏洞，而不是创建一个复杂的备忘录去简单的告诉他们需要去预防各种千奇百怪的攻击。所以，OWASP备忘录系列诞生了。
+这篇文章的主要目的是去给应用安全测试者提供一份xss漏洞检测指南。文章的初始内容由RSnake提供给OWASP，从他的xss备忘录: http://ha.ckers.org/xss.html 。目前这个网页已经重定向到我们这里，我们打算维护和完善它。OWASP的第一个防御备忘录项目：the XSS (Cross Site Scripting) Prevention Cheat Sheet灵感来源于RSnake的 XSS Cheat Sheet，所以我们对他给予我们的启发表示感谢。我们想要去创建短小简单的参考给开发者去帮助他们预防xss漏洞，而不是创建一个复杂的备忘录去简单的告诉他们需要去预防各种千奇百怪的攻击。所以，OWASP备忘录系列诞生了。
 
 ------
 #测试#
