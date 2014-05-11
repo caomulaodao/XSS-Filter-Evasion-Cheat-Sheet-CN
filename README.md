@@ -741,7 +741,7 @@ Firefox 使用 Google的"feeling lucky" 函数去重定向用户输入的任何�
     <A HREF="javascript:document.location='http://www.google.com/'">XSS</A>
 
 **针对内容替换的攻击向量**
-假设"http://www.google.com/"会被替换为空。我确实使用了一个简单的攻击向量去针对特殊文字过滤依靠过滤器本身。这是一个例子去帮助创建向量。（IE: "java&#x09;script:" 被替换为"java	script:", 它是仍可以工作在 IE,使用安全模块的 Netscape 8.1+ 和 Opera）
+假设 "http://www.google.com/" 会被替换为空。我确实使用了一个简单的攻击向量去针对特殊文字过滤依靠过滤器本身。这是一个例子去帮助创建向量。（IE: "java&#x09;script:" 被替换为"java	script:", 它是仍可以工作在 IE,使用安全模块的 Netscape 8.1+ 和 Opera）
 
     <A HREF="http://www.gohttp://www.google.com/ogle.com/">XSS</A>
 
