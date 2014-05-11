@@ -745,6 +745,7 @@ Firefox 使用 Google的"feeling lucky" 函数去重定向用户输入的任何�
 
     <A HREF="http://www.gohttp://www.google.com/ogle.com/">XSS</A>
 
+-----
 ##字符编码表##
 再付 "<" 在html或是javascript中所有可能的编码形式。它们绝大多数是无法正常渲染的，但是可以在上文中某些情景下得到渲染。
 
@@ -818,13 +819,17 @@ Firefox 使用 Google的"feeling lucky" 函数去重定向用户输入的任何�
     \x3C
     \u003c
     \u003C
+
+-----
 ##字符编码和ip混淆器##
 下面地址中包含了在xss有用的各种基本转换器。
 http://ha.ckers.org/xsscalc.html
 
+----
 ##作者和主编##
 Robert "RSnake" Hansen
 
+----
 ##翻译##
 老道
   [1]: http://ha.ckers.org/xsscalc.html
