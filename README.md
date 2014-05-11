@@ -1,4 +1,4 @@
-XSS_Filter_Evasion_Cheat_Sheet 中文版
+XSS Filter Evasion Cheat Sheet 中文版
 ==================================
 
 译者注：
