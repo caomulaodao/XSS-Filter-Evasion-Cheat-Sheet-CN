@@ -732,7 +732,7 @@ Firefox 使用 Google的"feeling lucky" 函数去重定向用户输入的任何�
     <A HREF="http://google:ha.ckers.org">XSS</A>
 
 **移除别名**
-结合上面的url。移除"www."将节省四个字符。
+结合上面的url。移除 "www." 将节省四个字符。
 
     <A HREF="http://google.com/">XSS</A>
 
