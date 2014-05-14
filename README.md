@@ -629,13 +629,13 @@ Rnaske开发了一个XSS fuzzer去探测可以在开括号和javascript之间加
 
 ----
 ##嵌入命令的IMG##
-它是工作于那些需要用户认证后才可以执行命令的当前域页面。它将可以创建删除用户（如果访问者是管理员），或是寄送某些凭证等等，虽然他是较少被使用但是是非常有用的。
+它是用于那些需要用户认证后才可以访问的页面，并且在访问这些页面的过程中会执行某些命令。因此它将可以创建或删除用户（如果访问者是管理员），或是寄送某些凭证等等，虽然它是较少被使用但是是非常有用的。
 
     <IMG SRC="http://www.thesiteyouareon.com/somecommand.php?somevariables=maliciouscode">
 
 -----
 ##嵌入命令的IMG II##
-这是更加的可怕因为并没有特别的标识符去使它看起开来可疑。除非不允许引入第三方域的图片。这个向量是使用一个 302 or 304（或其他可行方案）去重定向一个图片地址为带有某些命令的地址。因此一个正常的图片标签代码&lt;IMG SRC="a.jpg">可以是带有命令的xss向量。但是用户看到的仅仅是正常的图片链接地址。下面是一个.htaccess（apche下）配置文件去完成这个向量。（感谢Timo为这部分。）
+这是更加的可怕，因为并没有特别的标识符去鉴别它是否可疑。除非不允许引入第三方域的图片。这个向量是使用一个 302 or 304（或其他可行方案）去重定向一个图片地址为带有某些命令的地址。因此一个正常的图片标签代码&lt;IMG SRC="a.jpg">可以是带有命令的xss向量。但是用户看到的仅仅是正常的图片链接地址。下面是一个.htaccess（apche下）配置文件去完成这个向量。（感谢Timo为这部分。）
 
     Redirect 302 /a.jpg http://victimsite.com/admin.asp&deleteuser
 
@@ -647,7 +647,7 @@ Rnaske开发了一个XSS fuzzer去探测可以在开括号和javascript之间加
 
 -----
 ##UTF-7编码##
-如果存在xss的页面没有提供页面charset header，或是对于任何被设为UTF-7 的浏览器，我们可以利用下面的代码。（感谢Roman Ivanov 的提供），点击这儿为这个例子。（如果页面设置是自动识别编码且content-types 没有被覆盖，在ie浏览器或使用了IE渲染引擎的 Netscape 8.1，咋你不需要声明 charset ）在没有改变编码的情况下它是不能工作在任何现代浏览器，这是为什么它被标记为完全不支持。Watchfire发现这个漏洞在Google's 自定义 404 脚本中.
+如果存在xss的页面没有包含页面charset header，或是对于任何被设为UTF-7 的浏览器，我们可以利用下面的代码。（感谢Roman Ivanov 的提供），点击这儿为这个例子。（如果页面设置是自动识别编码且content-types 没有被覆盖，在ie浏览器或使用了IE渲染引擎的 Netscape 8.1，则你不需要声明 charset ）在没有改变编码的情况下它是不能工作在任何现代浏览器，这也是为什么它被标记为完全不支持。Watchfire发现这个漏洞在Google的 自定义 404 脚本中.
 
     <HEAD><META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=UTF-7"> </HEAD>+ADw-SCRIPT+AD4-alert('XSS');+ADw-/SCRIPT+AD4-
 
